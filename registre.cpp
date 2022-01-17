@@ -168,7 +168,7 @@ class Registre : public Task {
 
 int main() {
     
-    //Declararea obiectului de tip Retele si apelarea functiei solve
+    //Declararea obiectului de tip Registre si apelarea functiei solve
     Registre registre;
     registre.solve();
 
