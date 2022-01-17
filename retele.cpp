@@ -8,7 +8,8 @@ const string oracleInputFile = "sat.cnf";
 class Task1 : public Task {
     public:
         int n, m, k;
-        vector<int> v[maxn];
+        int matrix[maxn][maxn] = {0};
+        vector<int> solution;
         void solve() {
             read_problem_data();
             formulate_oracle_question();
@@ -21,37 +22,94 @@ class Task1 : public Task {
             for (int i = 1; i <= m; ++i) {
                 int x, y;
                 cin >> x >> y;
-                v[x].push_back(y);
-                v[y].push_back(x);
+                matrix[x][y] = matrix[y][x] = 1;
             }
-
         }
         void formulate_oracle_question() {
             ofstream out (oracleInputFile);
-            out << "p cnf";
-            
+            out << "p cnf " << k * n << " ";
+            int clause = k;
+            clause +=(n * n - 2 * m) * (k - 1) * k / 2; 
+            clause += (k - 1) * k / 2 * n;
+            clause += k * (n - 1) * n / 2;
+            out << clause << '\n';
+
+            for (int i = 1; i <= k; ++i) {
+                for (int j = 1; j <= n; ++j) {
+                    out << (i - 1) * n + j << " ";
+                }
+                out << "0\n";
+            }
+            int sum = 0;
+            for (int i = 1; i <= n; ++i) {
+                for (int j = 1; j <= n; ++j) {
+                    if (!matrix[i][j]) {
+                        for (int t = 1; t < k; ++t) {
+                            for (int t1 = t + 1; t1 <= k; ++t1) {
+                                out << -((t - 1) * n + i) << " " << -((t1 - 1) * n + j) << " 0\n";
+                            }
+                        }
+
+                    }
+                }
+            }
+
+            for (int i = 1; i <= k; ++i) {
+                for (int j = i + 1; j <= k; ++j) {
+                    for (int t = 1; t <= n; ++t) {
+                        out << -((i - 1) * n + t) << " " << -((j - 1) * n + t) << " 0\n";
+                    }
+                }
+            }
+
+            for (int i = 1; i <= k; ++i) {
+                for (int j = 1; j <= n; ++j) {
+                    for (int t = j + 1; t <= n; ++t) {
+                        out << -((i - 1) * n + j) << " " << -((i - 1) * n + t) << " 0\n";
+                    }
+                }
+            }
+            out.close();
 
         }
         void decipher_oracle_answer() {
-            
-        }
-        void write_answer() {
-            cout << n << " " << m << " " << k << '\n';
-            for (auto u:v) {
-                for (auto u1:u) {
-                    cout << u1 << " ";
+            ifstream in("sat.sol");
+            string s;
+            in >> s;
+            if (s == "True") {
+                int length;
+                in >> length;
+                for (int i = 1; i <= n * k; ++i) {
+                    int x; in >> x;
+                    if (x > 0) {
+                        x %= n;
+                        if (x == 0)x = n;
+                        solution.push_back(x);
+                    }
                 }
             }
+            else {
+                solution.push_back(-1);
+            }
+        }
+        void write_answer() {
+           if (solution[0] == -1) {
+               cout << "False";
+           }
+           else {
+               cout << "True\n";
+               for (auto number : solution) {
+                   cout << number << " ";
+               }
+           }
         }
 };
-
 
 
 int main() {
     
     Task1 retele;
     retele.solve();
-
 
 
     return 0;
