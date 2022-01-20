@@ -167,6 +167,26 @@ class Retele : public Task {
                }
            }
         }
+
+        void setN(int n) {
+            this -> n = n;
+        }
+
+        void setM(int m) {
+            this -> m = m;
+        }
+
+        void setK(int k) {
+            this -> k = k;
+        }
+
+        void setMatrix(int matrix[maxn][maxn]) {
+            for (int i = 1; i <= n; ++i) {
+                for (int j = 1; j <= m; ++j) {
+                    this -> matrix[i][j] = matrix[i][j];
+                }
+            }
+        }
 };
 
 
