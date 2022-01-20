@@ -1,1 +1,102 @@
 <Copyright Alexandru Olteanu, grupa 322CA, alexandruolteanu2001@gmail.com>
+
+    Task1 - Retele Sociale
+
+
+    Aceasta problema este la baza in termeni analitici gasirea unei grupari 
+de K noduri intr-un graf, grupare ce trebuie sa reprezinte un subgraf complet, 
+adica un subgraf in care fiecare nod are muchie directa la toate celelalte noduri.
+Astfel, identificand problema, problema cunoscuta si ca "K-Clique", aceasta a fost
+redusa in modul urmator:
+    Am ales sa asignez n * k variabile unde n este numarul de noduri iar k este 
+dimensiunea grupului cautat. Apoi, se considera variabila X(i, j) ca fiind true 
+daca si numai daca nodul j din graf se afla pe pozitia i in grupul cautat. 
+Astfel au fost necesare urmatoarele conditii :
+    - In primul rand, pentru fiecare pozitie de la 1 la k din sir, cel putin 
+    un nod va ocupa aceasta pozitie. Astfel, se construiesc cele k clauze de forma:
+        X(i, 1) ∨ X(i, 2) ∨ X(i, 3) ...  ∨ X(i, n) pentru fiecare i ∈ [1, k]
+    - In al doilea rand, o conditie necesara este accea ca oricare doua noduri 
+    care nu sunt conectate direct printr-o muchie nu vor putea face parte in acelasi 
+    timp din sirul de k elemente. Astfel, se construiesc urmatoarele clauze:
+        ¬X(i, v) ∨ ¬X(j, u) , pentru i, j ∈ [1, k], v, u ∈ [1, n] si v, u nu au muchie 
+        directa
+    - O a treia conditie este cea de unicitate, un nod poate sa ocupe doar o pozitie 
+    in sirul de k elemente. Astfel, se constuiesc urmatoarele clauze:
+        ¬X(i, v) ∨ ¬X(j, v), pentru i, j ∈ [1, k], v ∈ [1, n]
+    - Ultima conditie este cea de unicitate a nodurilor pe pozitiile din sir. Astfel, 
+    doua noduri nu pot ocupa aceeasi pozitie in sirul cautat. Se construiesc urmatoarele 
+    clauze:
+        ¬X(i, v) ∨ ¬X(i, u), pentru i ∈ [1, k] , v, u ∈ [1, n]
+    
+    In urma acestor conditii se poate apela oracolul care va produce o solutie valabila
+in cazul existentei acesteia. In continuare, pentru descifrare a fost nevoie de stocarea
+variabilelor cu valoarea true, facandu-se calculele necesare pentru aflarea nodurilor.
+    Din punct de vedere al complexitatii, in cadrul spatiului in memorie am utilizat 
+3 variabile de tip intreg (n, m, k), o matrice de adiacenta de dimensiuni 1000 * 1000
+si un vector "solution" pentru a stoca datele finale. In cadrul complexitatii temporale 
+complexitatea este O( k + (n ^ 2 - 2 * m) * (k - 1) * k / 2 + (k - 1) * k / 2 * n + 
+k * (n - 1) * n / 2). In cazurile cele mai nefavorabile, k este egal cu n, astfel 
+complexitatea este O(n ^ 3), reducerea fiind astfel una polinomiala
+
+
+    Task2 - Reclame Buclucase
+
+    Aceasta problema este la baza in termeni analitici gasirea unui grup minim de noduri 
+ce trebuie eliminate dintr-un graf astfel incat restul nodurilor ramase sa fie izolate.
+Aceasta problema poarta si denumirea de Minimum Vertex Cover.
+Putem formula aceasta problema altfel, metoda ce ne va oferi posibilitatea sa foosim 
+metodele de rezolvare de la task-ul 1 astfel : Daca dorim eliminarea numarului minim de 
+noduri, acest lucru este echivalent cu incercarea de a lasa cat mai multe noduri izolate
+in final. Daca vom construi matricea de adiacenta a grafului complementar, aceste noduri 
+izolate initial formeaza acum un clique de dimensiune maxima. Astfel, avand deja implementat
+algoritmul pentru gasirea unei Clique, vom cauta numarul k (dimensiunea grupului) maxim
+pentru care exista un Clique format din k oameni. Astfel, vom elimina restul nodurilor, 
+ramanand doar cei care erau izolati in nodul initial. Pnetru a face aceasta cautare am 
+ales sa folosesc cautarea binara pe numarul k deoarece functia:
+    F(x) = {True <=> se poate forma un Clique din x oameni}
+           {False <=> nu se poate forma un Clique din x oameni}
+    Aceasta functie este monotona, deci cautarea binara poate fi aplicata. In acest mod 
+se va apela construirea unui Clique cu ajutorul Task-ului 1 pana se va optine rezultatul
+optim. In final, descifrarea oracolului se face prin adaugarea in lista de elemente 
+ce trebuie eliminate a tuturor celor ce nu au facut parte din Clique maxim.
+    Din punct de vedere al complexitatii, in cadrul spatiului memorie am utilizat un 
+numar limitat de variabile (n, m, low, high, mid, etc), o matrice de adiacenta, un vector 
+pentru raspunsul oracolului si unul pentru solutie. De asemenea, am declarat si un obiect 
+de tip Retele. In cadrul complexitatii temoprale, complexitatea este O(log2(n) * O(Retele))
+deoarece cautarea binara are complexitatea O(log2(n)) si la fiecare astfel de pas a 
+trebuit rulat algoritmul de construire al unui Clique de dimensiune k. Astfel, in final 
+putem afirma ca avem complexitatea O(n ^ 2 * k * log2(n))
+
+
+    Task3 - Registre
+
+    Aceasta problema este la baza in termeni analitici gasirea unui mod de colorare in 
+cele k culori disponibile a nodurilor unui graf cu conditia ca doua noduri adiacente sa
+nu aiba aceeasi culoare. Astfel, aceasta problema poarta numele de "K-Coloring".
+    Astfel, identificand problema, aceasta a fost redusa in felul urmator:
+    Am ales sa asignez n * k variabile unde n este numarul de noduri iar k este 
+numarului de culori. Apoi, se considera variabila X(i, j) ca fiind true 
+daca si numai daca nodul j din graf are asignata culoarea i. Astfel au fost necesare urmatoarele 
+conditii :
+    - In primul rand, fiecare nod de la 1 la n va avea cel putin o culoare de la 1 la k asignata. 
+    Astfel, se construiesc cele n clauze de forma:
+        X(1, i) ∨ X(2, i) ∨ X(3, i) ...  ∨ X(k, i) pentru fiecare i ∈ [1, n]
+    - In al doilea rand, o conditie necesara este accea ca oricare doua noduri 
+    care sunt conectate direct printr-o muchie nu vor putea avea aceeasi culoare. 
+    Astfel, se construiesc urmatoarele clauze:
+        ¬X(i, v) ∨ ¬X(i, u) , pentru i ∈ [1, k], v, u ∈ [1, n] si v, u au muchie 
+        directa
+    - Ultima conditie este cea de unicitate, un nod poate sa aiba o singura culoare.
+    Astfel, se constuiesc urmatoarele clauze:
+        ¬X(i, v) ∨ ¬X(j, v), pentru i, j ∈ [1, k], v ∈ [1, n]
+    
+    In urma acestor conditii se poate apela oracolul care va produce o solutie valabila
+in cazul existentei acesteia. In continuare, pentru descifrare a fost nevoie de stocarea
+variabilelor cu valoarea true, facandu-se calculele necesare pentru aflarea culorii fiecarui nod.
+    Din punct de vedere al complexitatii, in cadrul spatiului in memorie am utilizat 
+3 variabile de tip intreg (n, m, k), o matrice de adiacenta de dimensiuni 1000 * 1000
+si un vector "solution" pentru a stoca datele finale. In cadrul complexitatii temporale 
+complexitatea este O( n + 2 * m * k + (k - 1) * k / 2 * n). In cazurile cele mai nefavorabile, 
+k este egal cu n, astfel complexitatea este O(n ^ 3), reducerea fiind astfel una polinomiala.
+    
+ 
